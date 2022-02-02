@@ -6,6 +6,8 @@ Unfortunately, Mollie does not provide an API endpoint for downloading settlemen
 
 The advantage here is that the entire accounting process can be automated, without the need to implement the API in a custom solution into the accounting system. Most systems already provide an integrated CSV mapper, so it's easier to just work with CSV files.
 
+⚠️ Please also note that this is purely a proof-of-concept type of solution, and in no way is ready for production use. Its purpose is to inspire merchants' tech teams to build a similar solution on their technology stack. It's not a batteries included, one size fits all, <insert business phrase here> solution! DO NOT USE IN PRODUCTION! No support can and will be given. ⚠️
+
 ## Requirements
 
 * Some recent version of PHP (8.0 or newer should do)
