@@ -1,0 +1,22 @@
+{
+    "name": "fjbender/settlement2csv",
+    "description": "Converts a Mollie Settlement from the API into a CSV file",
+    "license": "BSD-2-Clause",
+    "autoload": {
+        "psr-4": {
+            "Fjbender\\Settlement2csv\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Florian Bender",
+            "email": "florian.bender@mollie.com"
+        }
+    ],
+    "require": {
+        "symfony/console": "^6.0",
+        "symfony/dotenv": "^6.0",
+        "mollie/mollie-api-php": "^2.40",
+        "guzzlehttp/guzzle": "^7.4"
+    }
+}
