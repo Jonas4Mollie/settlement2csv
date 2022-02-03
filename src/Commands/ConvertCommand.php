@@ -82,21 +82,20 @@ class ConvertCommand extends Command
             fputcsv($outputFile, $transaction);
         }
 
-
         $progressBar->setMessage('Calculating withheld fees');
         // Get cost information from settlement
         $withheldFees = array();
         $settlementPeriods = json_decode(json_encode($settlement->periods), true);
         foreach($settlementPeriods as $year => $months) {
             foreach ($months as $month => $monthlySettlement) {
-                $withheldFees[$monthlySettlement['invoiceId']] = 0;
+                $withheldFees[$monthlySettlement['invoiceReference']] = 0;
                 foreach ($monthlySettlement['costs'] as $cost) {
-                    $withheldFees[$monthlySettlement['invoiceId']] -= $cost['amountGross']['value'];
+                    $withheldFees[$monthlySettlement['invoiceReference']] -= $cost['amountGross']['value'];
                 }
             }
         }
-        foreach ($withheldFees as $invoiceId => $amount) {
-            fputcsv($outputFile, $this->mapWithheldFeesToArray($invoiceId, round($amount, 2), $settlement));
+        foreach ($withheldFees as $invoiceReference => $amount) {
+            fputcsv($outputFile, $this->mapWithheldFeesToArray($invoiceReference, round($amount, 2), $settlement));
         }
         fclose($outputFile);
         $progressBar->setMessage('Done');
@@ -187,15 +186,14 @@ class ConvertCommand extends Command
         return $transactionArray;
     }
 
-    private function mapWithheldFeesToArray(string $invoiceId, float $withheldFees, Settlement $settlement): array
+    private function mapWithheldFeesToArray(string $invoiceReference, float $withheldFees, Settlement $settlement): array
     {
-        $invoice = $this->mollie->invoices->get($invoiceId);
         // Date
         $withheldFeesArray[0] = $settlement->createdAt;
         // Payment Method
         $withheldFeesArray[1] = null;
         // Currency
-        $withheldFeesArray[2] = $invoice->grossAmount->currency;
+        $withheldFeesArray[2] = 'EUR'; // todo check if currency is always EUR
         // Amount
         $withheldFeesArray[3] = $withheldFees;
         // Status
@@ -203,7 +201,7 @@ class ConvertCommand extends Command
         // ID
         $withheldFeesArray[5] = null;
         // Description
-        $withheldFeesArray[6] = 'Withheld transaction fees ' . $invoice->reference;
+        $withheldFeesArray[6] = 'Withheld transaction fees ' . $invoiceReference;
         // Consumer Name
         $withheldFeesArray[7] = null;
         // Consumer Bank Account
@@ -211,7 +209,7 @@ class ConvertCommand extends Command
         // Consumer BIC
         $withheldFeesArray[9] = null;
         // Settlement Currency
-        $withheldFeesArray[10] = $invoice->grossAmount->currency;
+        $withheldFeesArray[10] = 'EUR'; // todo check if currency is always EUR
         // Settlement Amount
         $withheldFeesArray[11] = $withheldFees;
         // Settlement Reference
