@@ -38,6 +38,7 @@ Done
 
 * The application only approximates the actual Mollie Settlement Export from the Dashboard. There is some information that cannot be added without slowing down the application too much, especially when dealing with captures. The description of captures is thusly slightly different, but should provide sufficient information to reconcile.
 * There is a small bug in the Mollie API that causes different amounts to be returned for the withheld transaction fees when the settlement spans over two months. In sum the amount is correct, but some fees will be attributed to the wrong invoice.
+* It is very likely this application does not work correctly with Non-Euro Balances. `EUR` is hard-coded in various places.
 
 ## License
 
