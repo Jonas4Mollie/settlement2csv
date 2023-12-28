@@ -43,10 +43,13 @@ class ConvertCommand extends Command
         $settlement = $this->mollie->settlements->get($input->getArgument('settlementId') ?? $this->getLatestSettlementId());
         $output->writeln('<info>Grabbing Settlement ID: ' . $settlement->id . '</info>');
 
-        if (file_exists($settlement->id . '.csv')) {
-            $output->writeln('<error>File already exists</error>');
-            return 1;
-        }
+        file_put_contents("dump.json", json_encode($settlement));
+
+
+        // if (file_exists($settlement->id . '.csv')) {
+        //     $output->writeln('<error>File already exists</error>');
+        //     return 1;
+        // }
 
         $output->writeln('<info>Writing to file: ' . $settlement->id . '.csv</info>');
         $totalTransactionsExpected = $this->countTransactionsInSettlement($settlement);
@@ -85,15 +88,21 @@ class ConvertCommand extends Command
         $progressBar->setMessage('Calculating withheld fees');
         // Get cost information from settlement
         $withheldFees = array();
+        $totalFees =0;
         $settlementPeriods = json_decode(json_encode($settlement->periods), true);
         foreach($settlementPeriods as $year => $months) {
             foreach ($months as $month => $monthlySettlement) {
                 $withheldFees[$monthlySettlement['invoiceReference']] = 0;
-                foreach ($monthlySettlement['costs'] as $cost) {
-                    $withheldFees[$monthlySettlement['invoiceReference']] -= $cost['amountGross']['value'];
+                if(array_key_exists('costs',$monthlySettlement)){
+                    foreach ($monthlySettlement['costs'] as $cost) {
+                        $withheldFees[$monthlySettlement['invoiceReference']] -= $cost['amountGross']['value'];
+                        $totalFees += $cost['amountGross']['value'];
+                    }
                 }
             }
         }
+        $output->writeln('<info>total fees: '.$totalFees.'</info>');
+        $output->writeln('sefsdfsdf');
         foreach ($withheldFees as $invoiceReference => $amount) {
             fputcsv($outputFile, $this->mapWithheldFeesToArray($invoiceReference, round($amount, 2), $settlement));
         }

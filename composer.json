@@ -16,7 +16,7 @@
     "require": {
         "symfony/console": "^6.0",
         "symfony/dotenv": "^6.0",
-        "mollie/mollie-api-php": "^2.40",
+        "mollie/mollie-api-php": "2.64",
         "guzzlehttp/guzzle": "^7.4"
     }
 }

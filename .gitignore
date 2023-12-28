@@ -2,3 +2,5 @@
 *.csv
 vendor/
 .idea/
+.env
+dump.json
