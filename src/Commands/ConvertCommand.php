@@ -102,10 +102,11 @@ class ConvertCommand extends Command
             }
         }
         $output->writeln('<info>total fees: '.$totalFees.'</info>');
+        fputcsv($outputFile,['totalFees',$totalFees]);
         $output->writeln('sefsdfsdf');
-        foreach ($withheldFees as $invoiceReference => $amount) {
-            fputcsv($outputFile, $this->mapWithheldFeesToArray($invoiceReference, round($amount, 2), $settlement));
-        }
+        // foreach ($withheldFees as $invoiceReference => $amount) {
+        //     fputcsv($outputFile, $this->mapWithheldFeesToArray($invoiceReference, round($amount, 2), $settlement));
+        // }
         fclose($outputFile);
         $progressBar->setMessage('Done');
         $progressBar->finish();
